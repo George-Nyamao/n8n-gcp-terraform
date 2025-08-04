@@ -16,8 +16,8 @@ docker run -d --name n8n \
   -p 5678:5678 \
   -v /root/n8n_data:/home/node/.n8n \
   -e N8N_BASIC_AUTH_ACTIVE=true \
-  -e N8N_BASIC_AUTH_USER=morara \
-  -e N8N_BASIC_AUTH_PASSWORD=m@n3noNane \
+  -e N8N_BASIC_AUTH_USER=add \
+  -e N8N_BASIC_AUTH_PASSWORD=changeme \
   -e N8N_HOST=$DOMAIN \
   n8nio/n8n
 
