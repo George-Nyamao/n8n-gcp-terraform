@@ -21,7 +21,7 @@ resource "google_compute_instance" "n8n_vm" {
     access_config {}  # Required for external IP
   }
 
-  metadata_startup_script = templatefile("startup.sh", { DOMAIN_PLACEHOLDER = var.domain })
+  metadata_startup_script = templatefile("startup.sh", { DOMAIN = var.domain })
 
   tags = ["n8n"]
 

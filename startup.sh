@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOMAIN="${DOMAIN_PLACEHOLDER}"
+DOMAIN="${DOMAIN}"
 EMAIL="admin@${DOMAIN}"  # Use a real admin email for Let's Encrypt
 
 # Update and install packages
