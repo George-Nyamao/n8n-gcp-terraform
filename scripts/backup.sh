@@ -5,5 +5,5 @@ BACKUP_FILE="/tmp/n8n-backup-$TIMESTAMP.tar.gz"
 
 tar -czf $BACKUP_FILE -C /root/n8n_data .
 
-gsutil cp $BACKUP_FILE gs://${project_id}-n8n-backups/
+gsutil cp $BACKUP_FILE gs://GCS_BUCKET_PLACEHOLDER/
 rm -f $BACKUP_FILE

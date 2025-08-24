@@ -9,6 +9,6 @@ docker run -d --name n8n \
   -v /root/n8n_data:/home/node/.n8n \
   -e N8N_BASIC_AUTH_ACTIVE=true \
   -e N8N_BASIC_AUTH_USER=admin \
-  -e N8N_BASIC_AUTH_PASSWORD=changeme \
-  -e N8N_HOST=n8n.moraran.com \
+  -e N8N_BASIC_AUTH_PASSWORD=N8N_PASSWORD_PLACEHOLDER \
+  -e N8N_HOST=DOMAIN_PLACEHOLDER \
   n8nio/n8n

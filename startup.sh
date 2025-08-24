@@ -1,11 +1,15 @@
 #!/bin/bash
 
+# Variables passed from Terraform
 DOMAIN="${DOMAIN}"
-EMAIL="admin@${DOMAIN}"  # Use a real admin email for Let's Encrypt
+EMAIL="admin@${DOMAIN}"
+N8N_PASSWORD="${N8N_PASSWORD}"
+GCS_BUCKET="${GCS_BUCKET}"
+SCRIPTS_REPO_URL="${SCRIPTS_REPO_URL}"
 
 # Update and install packages
 apt-get update && apt-get upgrade -y
-apt-get install -y docker.io nginx certbot python3-certbot-nginx unzip
+apt-get install -y docker.io nginx certbot python3-certbot-nginx unzip google-cloud-sdk
 
 # Enable and start Docker
 systemctl enable docker
@@ -17,7 +21,7 @@ docker run -d --name n8n \
   -v /root/n8n_data:/home/node/.n8n \
   -e N8N_BASIC_AUTH_ACTIVE=true \
   -e N8N_BASIC_AUTH_USER=admin \
-  -e N8N_BASIC_AUTH_PASSWORD=changeme \
+  -e N8N_BASIC_AUTH_PASSWORD=$N8N_PASSWORD \
   -e N8N_HOST=$DOMAIN \
   n8nio/n8n
 
@@ -47,14 +51,17 @@ nginx -t && systemctl restart nginx
 # Install SSL certificate
 certbot --nginx --non-interactive --agree-tos --email $EMAIL -d $DOMAIN
 
-# Setup backup script
+# Setup scripts
 mkdir -p /opt/n8n
-curl -o /opt/n8n/backup.sh https://raw.githubusercontent.com/YOUR-GITHUB-REPO/scripts/main/backup.sh
+curl -o /opt/n8n/backup.sh $SCRIPTS_REPO_URL/scripts/backup.sh
+curl -o /opt/n8n/update.sh $SCRIPTS_REPO_URL/scripts/update.sh
 chmod +x /opt/n8n/backup.sh
-
-# Setup update script
-curl -o /opt/n8n/update.sh https://raw.githubusercontent.com/YOUR-GITHUB-REPO/scripts/main/update.sh
 chmod +x /opt/n8n/update.sh
+
+# Inject variables into scripts
+sed -i "s|GCS_BUCKET_PLACEHOLDER|$GCS_BUCKET|g" /opt/n8n/backup.sh
+sed -i "s|DOMAIN_PLACEHOLDER|$DOMAIN|g" /opt/n8n/update.sh
+sed -i "s|N8N_PASSWORD_PLACEHOLDER|$N8N_PASSWORD|g" /opt/n8n/update.sh
 
 # Add cron jobs
 (crontab -l 2>/dev/null; echo "0 3 * * * /opt/n8n/backup.sh") | crontab -
